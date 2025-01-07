@@ -79,14 +79,8 @@ def enter_phone_num(driver, phone_num):
     print('phone num entered')
 
 def expand_all_sections(driver):
-    count = 1
-    while True:
+    for i in range(30):
         try:
-            if count >= 25:
-                raise Exception('section_count_exceeded')
-            
-            count += 1
-
             expand_button = driver.find_element(By.CLASS_NAME, "PhoneNumbersBlock-module__loader--pc2Hc")            
             # expand_button.click()
             driver.execute_script("arguments[0].click();", expand_button)
@@ -96,12 +90,15 @@ def expand_all_sections(driver):
             print("Section expanded")
         except NoSuchElementException:
             print("No more sections found")
-            break
+            return
         except Exception as e:
             print(f"An exception occurred: {e}. Retrying...")
             print_ascii_code('error')
             time.sleep(1)
             continue
+    
+    print("exceeded_section_limit")
+    raise Exception('exceeded_section_limit')
 
 def get_all_numbers(driver):
     buttons = driver.find_elements(By.CLASS_NAME, "PhoneNumbersBlock-module__number--Fkfoh.PhoneNumbersBlock-module__numberHover--GntRY")
