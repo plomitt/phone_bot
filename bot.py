@@ -79,8 +79,14 @@ def enter_phone_num(driver, phone_num):
     print('phone num entered')
 
 def expand_all_sections(driver):
+    count = 1
     while True:
         try:
+            if count >= 25:
+                raise Exception('section_count_exceeded')
+            
+            count += 1
+
             expand_button = driver.find_element(By.CLASS_NAME, "PhoneNumbersBlock-module__loader--pc2Hc")            
             # expand_button.click()
             driver.execute_script("arguments[0].click();", expand_button)
