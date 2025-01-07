@@ -156,7 +156,7 @@ def check_phone_num(target_num, loop=None):
             print('quit')
             print(f'An exception occurred: {e}.')
             print_ascii_code('error')
-            loop and asyncio.run_coroutine_threadsafe(msg_queue.put({'result': 'error', 'msg': e}), loop)
+            loop and asyncio.run_coroutine_threadsafe(msg_queue.put({'result': 'error', 'msg': e, 'cycle': -1, 'target_num': '-1', 'numbers': [-1]}), loop)
 
     return match_num, numbers
 
@@ -218,7 +218,7 @@ def run_until_long_enough(target_num, loop=None, min_time=5):
         except Exception as e:
             print(f'An exception occurred: {e}.')
             print_ascii_code('error')
-            loop and asyncio.run_coroutine_threadsafe(msg_queue.put({'result': 'error', 'msg': e}), loop)
+            loop and asyncio.run_coroutine_threadsafe(msg_queue.put({'result': 'error', 'msg': e, 'cycle': -1, 'target_num': '-1', 'numbers': [-1]}), loop)
             continue
 
 
