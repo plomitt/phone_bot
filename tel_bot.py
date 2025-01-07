@@ -62,15 +62,19 @@ async def send_check_result(update, context):
         if item is None: break
 
         result = item['result']
-        cycle = item["cycle"]
+        cycle = item['cycle']
         print(f'Q GET: {str(cycle)}, {str(result)}')
 
         chat_id = update.effective_chat.id
 
-        msg = f'MATCH_FOUND\n\nLink: {PAGE_LINK}' if result else 'NO_MATCH'
-        msg += f'\nCycle: {str(cycle)}\nTarget: {str(item["target_num"])}\n\nNumbers: {str(item["numbers"])}'
+        if result != 'error':
+            msg = f'MATCH_FOUND\n\nLink: {PAGE_LINK}' if result else 'NO_MATCH'
+            msg += f'\nCycle: {str(cycle)}\nTarget: {str(item["target_num"])}\n\nNumbers: {str(item["numbers"])}'
 
-        msg_repeat = get_msg_repeat(result, cycle)
+            msg_repeat = get_msg_repeat(result, cycle)
+        else:
+            msg = f'ERROR!\n\n{item["msg"]}'
+            msg_repeat = 1
 
         for i in range(msg_repeat):
             await context.bot.send_message(chat_id=chat_id, text=msg, disable_notification=not result)

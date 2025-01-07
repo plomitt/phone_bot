@@ -109,7 +109,7 @@ def get_all_numbers(driver):
 
 
 
-def check_phone_num(target_num):
+def check_phone_num(target_num, loop=None):
     short_num = shorten_num(target_num)
     match_num = None
     numbers = None
@@ -156,6 +156,7 @@ def check_phone_num(target_num):
             print('quit')
             print(f'An exception occurred: {e}.')
             print_ascii_code('error')
+            loop and asyncio.run_coroutine_threadsafe(msg_queue.put({'result': 'error', 'msg': e}), loop)
 
     return match_num, numbers
 
@@ -168,7 +169,7 @@ def run_periodically(loop=None):
         print(ascii_msg(f'Cycle {cycle}'))
         
         target_num = get_phone_num()
-        result, numbers = run_until_long_enough(target_num)
+        result, numbers = run_until_long_enough(target_num, loop)
 
         to_put = {'result': result, 'cycle': cycle, 'target_num': target_num, 'numbers': numbers}
         loop and asyncio.run_coroutine_threadsafe(msg_queue.put(to_put), loop)
@@ -199,12 +200,13 @@ def run_periodically(loop=None):
     print("Bot checking routine has been stopped.")
     return 'bot_stopped'
 
-def run_until_long_enough(target_num, min_time=5):
+def run_until_long_enough(target_num, loop=None, min_time=5):
+    print(f'LOOP IS: {loop}')
     while True:
         try:
             start_time = time.time()
             
-            match_num, numbers = check_phone_num(target_num)
+            match_num, numbers = check_phone_num(target_num, loop)
             
             end_time = time.time()
             execution_time = end_time - start_time
@@ -216,6 +218,7 @@ def run_until_long_enough(target_num, min_time=5):
         except Exception as e:
             print(f'An exception occurred: {e}.')
             print_ascii_code('error')
+            loop and asyncio.run_coroutine_threadsafe(msg_queue.put({'result': 'error', 'msg': e}), loop)
             continue
 
 
