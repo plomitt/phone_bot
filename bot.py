@@ -9,7 +9,7 @@ import base64
 import asyncio
 from constants import PAGE_LINK
 from gemini import get_answer
-from helpers import ascii_msg, get_cycle_num, get_phone_num, print_ascii_code, set_cycle_num, set_phone_num, shorten_num
+from helpers import ascii_msg, get_phone_num, print_ascii_code, set_phone_num, shorten_num
 from shared import stop_event, msg_queue
 
 def setup_driver(width, height):
@@ -159,7 +159,7 @@ def check_phone_num(target_num):
 
 
 def run_periodically(loop=None):
-    cycle = get_cycle_num()
+    cycle = 1
     
     while not stop_event.is_set():
         print(ascii_msg(f'Cycle {cycle}'))
@@ -182,7 +182,6 @@ def run_periodically(loop=None):
         elif result is False:
             print(f"Cycle {cycle}: Function returned False. Waiting until next minute...")
             cycle += 1
-            set_cycle_num(cycle)
             if stop_event.is_set(): return
             time.sleep(60 - time.time() % 60)
         else:
@@ -217,9 +216,6 @@ def run_until_long_enough(target_num, min_time=5):
             continue
 
 
-
-def run_bot_from_file(loop=None):
-    return run_periodically(loop)
 
 if __name__ == "__main__":
     set_phone_num('+7 123 456 7890')

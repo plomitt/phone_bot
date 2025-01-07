@@ -1,19 +1,20 @@
 import re
 import pyfiglet
 
-from constants import DATA_CYCLE_NUM_LINE_ID, DATA_FILE_PATH, DATA_PHONE_NUM_LINE_ID, FAIL_MSG_NOTIF_STEP_LINE_ID, SCS_MSG_REP_AMNT_LINE_ID
+notif_step = 1
+notif_amnt = 10
+trg_phone_num = '+7 123 456 7890'
+
 
 def get_msg_repeat(res, cyc):
-    amnt = get_notif_amnt()
-    step = get_notif_step()
-    return amnt if res else (cyc % step == 0) * 1
+    global notif_step
+    global notif_amnt
+    return notif_amnt if res else (cyc % notif_step == 0) * 1
 
 
 
 def check_num_format(num):
     return re.match(r"^\+7 \d{3} \d{3} \d{4}$", num)
-
-
 
 def shorten_num(phone_number):
     digits_only = re.sub(r'\D', '', phone_number)
@@ -41,54 +42,39 @@ def ascii_msg(msg):
 
 
 def set_phone_num(num):
-    write_line_to_file(DATA_FILE_PATH, DATA_PHONE_NUM_LINE_ID, num)
-
-def get_phone_num():
-    num = get_line_from_file(DATA_FILE_PATH, DATA_PHONE_NUM_LINE_ID)
+    global trg_phone_num
 
     if not check_num_format(num):
         print('Incorrect phone number format.')
         raise Exception('Incorrect phone number format.')
+
+    trg_phone_num = num
+
+def get_phone_num():
+    global trg_phone_num
+
+    if not check_num_format(trg_phone_num):
+        print('Incorrect phone number format.')
+        raise Exception('Incorrect phone number format.')
     
-    return num
+    return trg_phone_num
 
-def set_cycle_num(num):
-    write_line_to_file(DATA_FILE_PATH, DATA_CYCLE_NUM_LINE_ID, num)
 
-def get_cycle_num():
-    cycle = int(get_line_from_file(DATA_FILE_PATH, DATA_CYCLE_NUM_LINE_ID))
+def set_notifs_step():
+    global notif_step
 
-    if cycle == None:
-        write_line_to_file(DATA_FILE_PATH, DATA_CYCLE_NUM_LINE_ID, 1)
-        return 1
-    
-    return cycle
+    steps = get_step_list(5, 60, 5)
+    notif_step = get_next_value(notif_step, steps)
 
-def get_notif_step():
-    return get_int_from_file(FAIL_MSG_NOTIF_STEP_LINE_ID)
+    return notif_step
 
-def set_notif_param(param):
-    if param == 'amnt':
-        return set_notif_param_value(SCS_MSG_REP_AMNT_LINE_ID, 5, 20, 5)
-    if param == 'step':
-        return set_notif_param_value(FAIL_MSG_NOTIF_STEP_LINE_ID, 5, 60, 5)
+def set_notifs_amnt():
+    global notif_amnt
 
-def set_notif_param_value(line_id, minv, maxv, step):
-    steps = get_step_list(minv, maxv, step)
-    old = get_int_from_file(line_id)
-    new = get_next_value(old, steps)
+    steps = get_step_list(5, 20, 5)
+    notif_amnt = get_next_value(notif_amnt, steps)
 
-    write_line_to_file(DATA_FILE_PATH, line_id, new)
-    return new
-
-def get_notif_amnt():
-    return get_int_from_file(SCS_MSG_REP_AMNT_LINE_ID)
-
-def set_notif_amnt(num):
-    write_line_to_file(DATA_FILE_PATH, SCS_MSG_REP_AMNT_LINE_ID, num)
-
-def get_int_from_file(line):
-    return int(get_line_from_file(DATA_FILE_PATH, line))
+    return notif_amnt
 
 def get_step_list(minv, maxv, step):
     return [1] + list(range(minv, maxv + 1, step))

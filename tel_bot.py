@@ -2,9 +2,9 @@ import os
 import asyncio
 import threading
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ConversationHandler
-from bot import run_bot_from_file
+from bot import run_periodically
 from constants import PAGE_LINK
-from helpers import check_num_format, get_msg_repeat, get_phone_num, set_notif_param, set_phone_num
+from helpers import check_num_format, get_msg_repeat, get_phone_num, set_phone_num, set_notifs_step, set_notifs_amnt
 from shared import stop_event, msg_queue
 from dotenv import load_dotenv
 
@@ -21,11 +21,11 @@ async def fallback(update, context):
     await update.message.reply_text("Invalid command. Please use /menu to see available options.")
 
 async def set_notif_amount(update, context):
-    num = set_notif_param('amnt')
+    num = set_notifs_amnt()
     await update.message.reply_text(f"Success notification amount set to: {num}")
 
 async def set_notif_step(update, context):
-    num = set_notif_param('step')
+    num = set_notifs_step()
     await update.message.reply_text(f"No-result notification interval set to: {num}")
 
 async def get_num(update, context):
@@ -91,7 +91,7 @@ async def start_check(update, context):
 
     loop = asyncio.get_running_loop()
 
-    check_thread = threading.Thread(target=run_bot_from_file, args=[loop])
+    check_thread = threading.Thread(target=run_periodically, args=[loop])
     check_thread.daemon = True
     check_thread.start()
 
