@@ -1,5 +1,5 @@
 # Telegram AI Phone Number Checker Bot
-<img width="1361" alt="Screenshot 2025-06-25 at 1 22 10 AM" src="https://github.com/user-attachments/assets/bda63c10-e0b8-4c19-9fee-6b9120fbbed9" />
+<img width="1361" alt="scrn_1" src="https://github.com/user-attachments/assets/bda63c10-e0b8-4c19-9fee-6b9120fbbed9" />
 This project contains a Telegram bot designed to periodically check for a specific phone number on a webpage. It utilizes Selenium for web automation and the Google Gemini API for CAPTCHA solving.
 
 ## Table of Contents

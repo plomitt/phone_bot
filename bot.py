@@ -201,7 +201,6 @@ def run_periodically(loop=None):
     return 'bot_stopped'
 
 def run_until_long_enough(target_num, loop=None, min_time=5):
-    print(f'LOOP IS: {loop}')
     while True:
         try:
             start_time = time.time()
